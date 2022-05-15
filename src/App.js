@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import styles from "./App.module.css";
 
 function App() {
   const [prompt, setPrompt] = useState("");
@@ -16,8 +17,7 @@ function App() {
      
     fetchData()
     .then(data=> {
-      console.log(data);
-      setResults([...results, {id: data.id, prompt, response: data.choices[0].text}])
+      setResults([{id: data.id, prompt, response: data.choices[0].text}, ...results])
       setPrompt("");
     })
     .catch(error => {
@@ -49,23 +49,27 @@ function App() {
 
   return (
     <Fragment >
-      <header></header>
-      <main>
+      <main className={styles.main}>
         <section>
           <h1>Fun with AI</h1>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Enter prompt
-              <textarea rows={10} cols={50} value={prompt} onChange={handleChange} />
-            </label>
-            <button type="submit">Submit</button>
-          </form>
         </section>
-        <section>
+        <form onSubmit={handleSubmit}>
+          <label for="textarea">Enter prompt</label>
+          <textarea id="textarea" value={prompt} onChange={handleChange} />
+          <button type="submit">Submit</button>
+        </form>
+        <section className={styles.result}>
           <h2>Responses</h2>
-          {results.map(result => <div key={result.id}>
-            <div><span>Prompt:</span><p>{result.prompt}</p></div>
-            <div><span>Response:</span><p>{result.response}</p></div>
+          {results.map(result => 
+          <div className={styles.card} key={result.id}>
+            <div>
+              <h4>Prompt:</h4>
+              <p>{result.prompt}</p>
+            </div>
+            <div>
+              <h4>Response:</h4>
+              <p>{result.response}</p>
+            </div>
           </div>)}
         </section>
       </main>
