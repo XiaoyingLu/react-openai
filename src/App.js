@@ -15,6 +15,7 @@ function App() {
   const [prompt, setPrompt] = useState("");
   const [engine, setEngine] = useState("")
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleTextChange = (event) => {
     setPrompt(event.target.value);
@@ -31,13 +32,17 @@ function App() {
       return;
     }
     console.log(engine);
+
+    setLoading(true);
      
     fetchData()
     .then(data=> {
+      setLoading(false);
       setResults([{id: data.id, prompt, response: data.choices[0].text}, ...results])
       setPrompt("");
     })
     .catch(error => {
+      setLoading(false);
       console.error('Error:', error);
     });;
   }
@@ -79,9 +84,10 @@ function App() {
             {engines.map(engine => <option key={engine.name} value={engine.value}>{engine.name}</option>)}
           </select>
           <button type="submit">Submit</button>
-        </form>
+        </form> 
         <section className={styles.result}>
           <h2>Responses</h2>
+          {loading && <div className={styles.loader}></div> }
           {results.map(result => 
           <div className={styles.card} key={result.id}>
             <div>
