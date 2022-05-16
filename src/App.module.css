@@ -36,6 +36,12 @@
   border-color: rgb(134, 133, 133);
 }
 
+.main form select {
+  margin-top: 4px;
+  padding: 8px 4px;
+  border-radius: 4px;
+  font-size: 14px;
+}
 
 .main button {
   margin-top: 4px;

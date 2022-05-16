@@ -1,19 +1,36 @@
 import { Fragment, useState } from "react";
 import styles from "./App.module.css";
 
+// TODO
+// http loading, error 
+
 function App() {
+  const engines = [
+    {name: "davinci", version: "text-davinci-002"},
+    {name: "curie", version: "text-curie-001"},
+    {name: "babbage", version: "text-babbage-001"},
+    {name: "ada", version: "text-ada-001"},
+  ];
+
   const [prompt, setPrompt] = useState("");
+  const [engine, setEngine] = useState("")
   const [results, setResults] = useState([]);
 
-  const handleChange = (event) => {
+  const handleTextChange = (event) => {
     setPrompt(event.target.value);
+  }
+
+  const handleEngineChange = (event) => {
+    setEngine(event.target.value);
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (prompt === "") {
+    // TODO: validate prompt
+    if (prompt === "" || engine === "") {
       return;
-    } 
+    }
+    console.log(engine);
      
     fetchData()
     .then(data=> {
@@ -35,7 +52,7 @@ function App() {
       presence_penalty: 0.0,
      };
         
-    const response = await fetch("https://api.openai.com/v1/engines/text-curie-001/completions", {
+    const response = await fetch(`https://api.openai.com/v1/engines/${engine}/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,8 +71,13 @@ function App() {
           <h1>Fun with AI</h1>
         </section>
         <form onSubmit={handleSubmit}>
-          <label for="textarea">Enter prompt</label>
-          <textarea id="textarea" value={prompt} onChange={handleChange} />
+          <label htmlFor="textarea">Enter prompt</label>
+          <textarea id="textarea" value={prompt} onChange={handleTextChange} />
+          <label htmlFor="select">Chose engine </label>
+          <select id="select" onChange={handleEngineChange}>
+            <option value="">--Please choose an engine--</option>
+            {engines.map(engine => <option key={engine.name} value={engine.value}>{engine.name}</option>)}
+          </select>
           <button type="submit">Submit</button>
         </form>
         <section className={styles.result}>
